@@ -1,0 +1,99 @@
+import tkinter as tk
+from tkinter import messagebox
+ 
+# --- Constantes de Atenuación Estándar (dB) ---
+# Estos valores se usan en los cálculos y pueden ajustarse
+ATENUACION_CABLE_KM = 0.35   # Atenuación del cable por kilómetro (dB/km)
+ATENUACION_CONECTOR = 0.5    # Atenuación de un conector (dB)
+ATENUACION_EMP_FUSION = 0.1  # Atenuación de un empalme por fusión (dB)
+ATENUACION_SPLITTER_1_2 = 3.5 # Atenuación de un splitter 1:2 (dB)
+ATENUACION_SPLITTER_1_4 = 7.0  # Atenuación de un splitter 1:4 (dB)
+ATENUACION_SPLITTER_1_8 = 10.5 # Atenuación de un splitter 1:8 (dB)
+ 
+def calcular_atenuacion():
+    """
+    Calcula la atenuación total de la red de fibra óptica.
+    """
+    try:
+        # Obtener los valores de los campos de entrada y convertirlos
+        longitud_cable = float(entry_longitud.get() or 0)
+        num_conectores = int(entry_conectores.get() or 0)
+        num_empalmes = int(entry_empalmes.get() or 0)
+        num_splitter_1_2 = int(entry_splitter_1_2.get() or 0)
+        num_splitter_1_4 = int(entry_splitter_1_4.get() or 0)
+        num_splitter_1_8 = int(entry_splitter_1_8.get() or 0)
+ 
+        # Si un campo está vacío, la función .get() devuelve una cadena vacía.
+        # Al usar 'or 0', nos aseguramos de que siempre haya un valor numérico (0)
+        # si el campo se deja vacío, evitando un error de ValueError.
+ 
+        # Calcular la atenuación por cada componente
+        atenuacion_por_longitud = longitud_cable * ATENUACION_CABLE_KM
+        atenuacion_por_conectores = num_conectores * ATENUACION_CONECTOR
+        atenuacion_por_empalmes = num_empalmes * ATENUACION_EMP_FUSION
+        atenuacion_por_splitter_1_2 = num_splitter_1_2 * ATENUACION_SPLITTER_1_2
+        atenuacion_por_splitter_1_4 = num_splitter_1_4 * ATENUACION_SPLITTER_1_4
+        atenuacion_por_splitter_1_8 = num_splitter_1_8 * ATENUACION_SPLITTER_1_8
+ 
+        # Sumar todas las atenuaciones
+        atenuacion_total = (atenuacion_por_longitud +
+                            atenuacion_por_conectores +
+                            atenuacion_por_empalmes +
+                            atenuacion_por_splitter_1_2 +
+                            atenuacion_por_splitter_1_4 +
+                            atenuacion_por_splitter_1_8)
+ 
+        # Mostrar el resultado
+        messagebox.showinfo("Resultado del Cálculo", 
+                            f"La atenuación total de la red es: {atenuacion_total:.2f} dB")
+ 
+    except ValueError:
+        # Manejar errores si el usuario ingresa texto no numérico
+        messagebox.showerror("Error de Entrada", 
+                             "Por favor, ingrese solo números enteros o decimales válidos en los campos.")
+    except Exception as e:
+        # Manejar cualquier otro error inesperado
+        messagebox.showerror("Error Inesperado", f"Ocurrió un error: {e}")
+ 
+# --- Configuración de la Ventana Principal (GUI) ---
+ventana = tk.Tk()
+ventana.title("Calculadora de Atenuación de Fibra Óptica FTTH")
+ventana.geometry("400x450") 
+ventana.resizable(False, False) # Evita que el usuario cambie el tamaño de la ventana
+ 
+# --- Crear y posicionar los widgets ---
+# Longitud del cable
+tk.Label(ventana, text="Longitud del cable (km):").pack(pady=5)
+entry_longitud = tk.Entry(ventana)
+entry_longitud.pack(pady=2)
+ 
+# Número de conectores
+tk.Label(ventana, text="Número de conectores:").pack(pady=5)
+entry_conectores = tk.Entry(ventana)
+entry_conectores.pack(pady=2)
+ 
+# Número de empalmes
+tk.Label(ventana, text="Número de empalmes por fusión:").pack(pady=5)
+entry_empalmes = tk.Entry(ventana)
+entry_empalmes.pack(pady=2)
+ 
+# Número de splitters 1:2
+tk.Label(ventana, text="Número de splitters 1:2:").pack(pady=5)
+entry_splitter_1_2 = tk.Entry(ventana)
+entry_splitter_1_2.pack(pady=2)
+ 
+# Número de splitters 1:4
+tk.Label(ventana, text="Número de splitters 1:4:").pack(pady=5)
+entry_splitter_1_4 = tk.Entry(ventana)
+entry_splitter_1_4.pack(pady=2)
+ 
+# Número de splitters 1:8
+tk.Label(ventana, text="Número de splitters 1:8:").pack(pady=5)
+entry_splitter_1_8 = tk.Entry(ventana)
+entry_splitter_1_8.pack(pady=2)
+ 
+# Botón de cálculo
+tk.Button(ventana, text="Calcular Atenuación Total", command=calcular_atenuacion, bg="lightblue", fg="black").pack(pady=15)
+ 
+# Iniciar el bucle principal de la aplicación
+ventana.mainloop()
